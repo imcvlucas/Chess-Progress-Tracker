@@ -1,18 +1,20 @@
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+
 import datetime
 import requests
 import json
+import io
+import chess.pgn
 
 
-def getChessNotation(game_url=""):
-    """Scrape chess notation from chess.com using Selenium."""
+def getChessNotation(url):
+    """Extract chess notation using chessdotcom_export library."""
 
-    # Grab HTML
-    PATH = "/home/lucas/Downloads"
-    driver = webdriver.Chrome(PATH)
-
-    URL = "https://www.chess.com/game/live/36227889133"
-    driver.get(URL)
+    game = chess.pgn.read_game(io.StringIO(games[0].pgn))
+    # Display chess move notation
+    for move in game.mainline_moves():
+        print(move)
 
 
 def main():
@@ -26,9 +28,10 @@ def main():
 
     # URL for archived games 
     URL = f"https://api.chess.com/pub/player/zzdxk/games/{year}/{month}"
-    # Data from Chess.com API
+    # Grab JSON from Chess.com API
     data = requests.get(URL).json()
     game_metadata = data["games"]
+
     # Store game IDs and URL
     past_games = {}
     for i, game in enumerate(game_metadata):
@@ -37,8 +40,8 @@ def main():
         past_games[game_id] = game_link
 
     # Get chess moves
-    for key, val in past_games.items():
-        print(key, val)
+    for game_id, game_link in past_games.items():
+        print(game_id, game_link)
 
 
 if __name__ == "__main__":
