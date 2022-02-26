@@ -5,15 +5,23 @@ import datetime
 import requests
 import json
 import io
+import chessdotcom_export
 import chess.pgn
 
 
-def getChessNotation(url):
+def getChessNotation(url=''):
     """Extract chess notation using chessdotcom_export library."""
 
-    game = chess.pgn.read_game(io.StringIO(games[0].pgn))
-    # Display chess move notation
-    for move in game.mainline_moves():
+    # Extract game data from chessdotcom API
+    matches = list(map(lambda j: chessdotcom_export.Game.from_api_response(j), chessdotcom_export.get_player_games('zzdxk')))
+    # Extract pgn 
+    games = matches[0].pgn
+    # Display game ID
+    game_url = matches[0].url[-1:-11:-1]
+    print(game_url)
+    # Display game 0 chess notation
+    game_movelist = chess.pgn.read_game(io.StringIO(games))
+    for move in game_movelist.mainline_moves():
         print(move)
 
 
