@@ -7,22 +7,34 @@ import json
 import io
 import chessdotcom_export
 import chess.pgn
+import chessdotcom
+
+
+def getPlayerProfile():
+    reponse = chessdotcom.get_player_profile('zzdxk')
+    player_name = response.player.name
+    print(player_name)
 
 
 def getChessNotation(url=''):
     """Extract chess notation using chessdotcom_export library."""
 
-    # Extract game data from chessdotcom API
-    matches = list(map(lambda j: chessdotcom_export.Game.from_api_response(j), chessdotcom_export.get_player_games('zzdxk')))
-    # Extract pgn 
-    games = matches[0].pgn
-    # Display game ID
-    game_url = matches[0].url[-1:-11:-1]
-    print(game_url)
-    # Display game 0 chess notation
-    game_movelist = chess.pgn.read_game(io.StringIO(games))
-    for move in game_movelist.mainline_moves():
-        print(move)
+    # # Extract game data from chessdotcom API
+    # matches = list(map(lambda j: chessdotcom_export.Game.from_api_response(j), chessdotcom_export.get_player_games('zzdxk')))
+    # # Game zero
+    # game = matches[0]
+    # print(game.url)
+    # # Display game ID
+    # game_url = game.url[-1:-11:-1]
+    # print(game_url)
+    # # Display game 0 chess notation
+    # game_movelist = chess.pgn.read_game(io.StringIO(game.pgn))
+    # for move in game_movelist.mainline_moves():
+    #     print(move)
+
+    # Use chessdotcom API to grab monthly games in pgn format
+    montly_matches = chessdotcom.client.get_player_games_by_month_pgn('zzdxk', 2022, 2)
+    print(month_matches)
 
 
 def main():
@@ -53,6 +65,7 @@ def main():
 
 
 if __name__ == "__main__":
-    getChessNotation()
+    getPlayerProfile()
+    # getChessNotation()
     # main();
 
